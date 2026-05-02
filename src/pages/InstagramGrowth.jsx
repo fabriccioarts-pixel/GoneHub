@@ -514,7 +514,7 @@ export default function InstagramGrowth() {
 
                           {/* Description */}
                           <div className="p-4 flex-1">
-                            <p className="text-sm text-[#888] italic leading-relaxed line-clamp-4">
+                            <p className="text-sm text-[#888] italic leading-relaxed md:line-clamp-4">
                               "{post.description || 'Sem descrição'}"
                             </p>
                           </div>
