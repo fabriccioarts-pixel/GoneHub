@@ -29,9 +29,17 @@ export default function ImportCSV({ onClose }) {
         if (file.name.endsWith('.csv')) {
           const buffer = await file.arrayBuffer()
           const view = new Uint8Array(buffer)
-          let text = (view.length >= 2 && view[0] === 0xFF && view[1] === 0xFE)
-            ? new TextDecoder('utf-16le').decode(view)
-            : new TextDecoder('utf-8').decode(view)
+          let text
+          if (view.length >= 2 && view[0] === 0xFF && view[1] === 0xFE) {
+            text = new TextDecoder('utf-16le').decode(view)
+          } else {
+            text = new TextDecoder('utf-8').decode(view)
+            // Detecta Windows-1252 mal-interpretado como UTF-8 (padrão comum em exports do Meta Ads Brasil)
+            // "Impressões" → "ImpressÃµes", "ção" → "Ã§Ã£o", "ã" → "Ã£"
+            if (/Ã[£§³¡¢¤¥¦¨©ª«¬®¯°±²µ¶·¸¹º»¼½¾¿]/.test(text) || text.includes('Ã£') || text.includes('Ã§')) {
+              text = new TextDecoder('windows-1252').decode(view)
+            }
+          }
           data = detectAndParse(text)
         } else if (file.name.endsWith('.md')) {
           const text = await file.text()

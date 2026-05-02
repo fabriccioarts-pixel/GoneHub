@@ -145,8 +145,8 @@ export default function AdsMonitor() {
           <MetricCard title="Impressões" value={Number(data.impressions).toLocaleString('pt-BR')} icon={Eye} color="cyan" />
           <MetricCard title="Mensagens Iniciadas" value={Number(data.messages || 0).toLocaleString('pt-BR')} icon={Activity} color="purple" />
           <MetricCard title="Custo por Mensagem" value={`R$ ${data.costPerMessage || '0.00'}`} icon={BarChart2} color="emerald" />
-          <MetricCard title="Cliques no Link" value={Number(data.clicks || 0).toLocaleString('pt-BR')} icon={MousePointer} color="blue" />
-          <MetricCard title="Taxa de Cliques (CTR)" value={`${data.ctr}%`} icon={TrendingUp} color="amber" />
+          <MetricCard title="Cliques no Link" value={Number(data.clicks || 0) > 0 ? Number(data.clicks).toLocaleString('pt-BR') : 'N/D'} icon={MousePointer} color="blue" />
+          <MetricCard title="Taxa de Cliques (CTR)" value={Number(data.ctr) > 0 ? `${data.ctr}%` : 'N/D'} icon={TrendingUp} color="amber" />
         </div>
 
         {/* Gráficos */}

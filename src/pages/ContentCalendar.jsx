@@ -171,7 +171,7 @@ function MarkdownRenderer({ content }) {
 
 // ── CommentsPanel ─────────────────────────────────────────────────────────────
 
-function CommentsPanel({ comments, commentsLoading, newComment, setNewComment, submitComment, savingComment, commentsEndRef, fullHeight = false }) {
+function CommentsPanel({ comments, commentsLoading, newComment, setNewComment, submitComment, savingComment, commentsEndRef, deleteComment, currentRole, fullHeight = false }) {
   return (
     <div className="flex flex-col h-full min-h-0">
       <div className="flex items-center gap-2 mb-4 flex-shrink-0">
@@ -197,28 +197,40 @@ function CommentsPanel({ comments, commentsLoading, newComment, setNewComment, s
             <p className="text-xs text-[#3a3a3a] mt-1">Seja o primeiro a comentar.</p>
           </div>
         ) : (
-          comments.map(c => (
-            <div key={c.id} className={`flex gap-2.5 ${c.author_role === 'admin' ? 'flex-row-reverse' : 'flex-row'}`}>
-              <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 ${
-                c.author_role === 'admin' ? 'bg-orange-500 text-white' : 'bg-indigo-600 text-white'
-              }`}>
-                {c.author_name?.charAt(0).toUpperCase()}
-              </div>
-              <div className={`max-w-[82%] flex flex-col ${c.author_role === 'admin' ? 'items-end' : 'items-start'}`}>
-                <div className={`flex items-center gap-1.5 mb-1 ${c.author_role === 'admin' ? 'flex-row-reverse' : ''}`}>
-                  <span className="text-xs font-medium text-white">{c.author_name}</span>
-                  <span className="text-[10px] text-[#444]">{formatCommentTime(c.created_at)}</span>
-                </div>
-                <div className={`px-3 py-2.5 rounded-xl text-sm text-[#ddd] leading-relaxed ${
-                  c.author_role === 'admin'
-                    ? 'bg-orange-500/15 border border-orange-500/20 rounded-tr-sm'
-                    : 'bg-[#1e1e1e] border border-[#2a2a2a] rounded-tl-sm'
+          comments.map(c => {
+            const isOwn = c.author_role === currentRole
+            return (
+              <div key={c.id} className={`flex gap-2.5 group ${c.author_role === 'admin' ? 'flex-row-reverse' : 'flex-row'}`}>
+                <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 ${
+                  c.author_role === 'admin' ? 'bg-orange-500 text-white' : 'bg-indigo-600 text-white'
                 }`}>
-                  {c.content}
+                  {c.author_name?.charAt(0).toUpperCase()}
+                </div>
+                <div className={`max-w-[82%] flex flex-col ${c.author_role === 'admin' ? 'items-end' : 'items-start'}`}>
+                  <div className={`flex items-center gap-1.5 mb-1 ${c.author_role === 'admin' ? 'flex-row-reverse' : ''}`}>
+                    <span className="text-xs font-medium text-white">{c.author_name}</span>
+                    <span className="text-[10px] text-[#444]">{formatCommentTime(c.created_at)}</span>
+                    {isOwn && deleteComment && (
+                      <button
+                        onClick={() => deleteComment(c.id)}
+                        className="opacity-0 group-hover:opacity-100 text-[#333] hover:text-red-400 transition-all"
+                        title="Apagar comentário"
+                      >
+                        <Trash2 size={11} />
+                      </button>
+                    )}
+                  </div>
+                  <div className={`px-3 py-2.5 rounded-xl text-sm text-[#ddd] leading-relaxed ${
+                    c.author_role === 'admin'
+                      ? 'bg-orange-500/15 border border-orange-500/20 rounded-tr-sm'
+                      : 'bg-[#1e1e1e] border border-[#2a2a2a] rounded-tl-sm'
+                  }`}>
+                    {c.content}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))
+            )
+          })
         )}
         <div ref={commentsEndRef} />
       </div>
@@ -320,6 +332,12 @@ export default function ContentCalendar() {
       .order('created_at', { ascending: true })
     if (!error && data) setComments(data)
     setCommentsLoading(false)
+  }
+
+  async function deleteComment(commentId) {
+    if (!supabase) return
+    const { error } = await supabase.from('post_comments').delete().eq('id', commentId)
+    if (!error) setComments(prev => prev.filter(c => c.id !== commentId))
   }
 
   async function submitComment() {
@@ -510,7 +528,7 @@ export default function ContentCalendar() {
 
   const visiblePosts = isClient ? posts.filter(p => p.status !== 'Rascunho') : posts
   const filtered = filterStatus === 'Todos' ? visiblePosts : visiblePosts.filter(p => p.status === filterStatus)
-  const commentsPanelProps = { comments, commentsLoading, newComment, setNewComment, submitComment, savingComment, commentsEndRef }
+  const commentsPanelProps = { comments, commentsLoading, newComment, setNewComment, submitComment, savingComment, commentsEndRef, deleteComment, currentRole: isAdmin ? 'admin' : 'client' }
   const isFullScreen = showModal && editingId && viewMode === 'view'
   const isFormModal = showModal && (!editingId || viewMode === 'edit')
   const TypeIcon = TYPES[form.type]?.icon || Image
