@@ -33,21 +33,21 @@ export default function MetricCard({ title, value, change, changeLabel, icon: Ic
   const isNeutral = change === 0 || change === undefined
 
   return (
-    <div className={`bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 border-l-2 ${accent} rounded-xl p-6 hover:border-[#333333] hover:shadow-lg transition-all duration-200`}>
+    <div className={`bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 border-l-2 ${accent} rounded-xl p-3 md:p-6 hover:border-[#333333] hover:shadow-lg transition-all duration-200`}>
       {/* Label + Icon — tertiary layer */}
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-xs font-medium text-[#888888] uppercase tracking-widest leading-none">
+      <div className="flex items-center justify-between mb-2 md:mb-4">
+        <p className="text-[10px] md:text-xs font-medium text-[#888888] uppercase tracking-widest leading-none">
           {title}
         </p>
         {Icon && (
-          <div className={`w-8 h-8 rounded-lg border flex items-center justify-center flex-shrink-0 ${iconClass}`}>
-            <Icon size={16} />
+          <div className={`w-7 h-7 md:w-8 md:h-8 rounded-lg border flex items-center justify-center flex-shrink-0 ${iconClass}`}>
+            <Icon size={14} className="md:size-4" />
           </div>
         )}
       </div>
 
       {/* Value — primary layer, maximum weight */}
-      <p className="text-3xl font-bold text-white tracking-tight leading-none mb-3">
+      <p className="text-xl md:text-3xl font-bold text-white tracking-tight leading-none mb-2 md:mb-3">
         {prefix}{value}{suffix}
       </p>
 

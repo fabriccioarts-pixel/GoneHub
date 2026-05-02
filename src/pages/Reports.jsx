@@ -62,7 +62,7 @@ export default function Reports() {
   return (
     <div>
       <Header title="Relatórios" />
-      <div className="p-6 space-y-5">
+      <div className="p-4 md:p-6 space-y-4 md:space-y-5">
 
         {/* Controles */}
         <div className="flex items-center justify-between flex-wrap gap-3">
@@ -85,10 +85,10 @@ export default function Reports() {
         {/* Relatório */}
         <div ref={reportRef} className="bg-[#111111] border border-[#2a2a2a]/50 rounded-2xl overflow-hidden">
           {/* Cabeçalho */}
-          <div className="px-8 py-7 border-b border-[#2a2a2a]/50" style={{ background: 'linear-gradient(to right, rgba(67,20,7,0.6), rgba(74,4,78,0.4))' }}>
+          <div className="px-4 md:px-8 py-5 md:py-7 border-b border-[#2a2a2a]/50" style={{ background: 'linear-gradient(to right, rgba(67,20,7,0.6), rgba(74,4,78,0.4))' }}>
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-bold text-white">{activeClient?.name || 'Cliente'}</h1>
+                <h1 className="text-xl md:text-2xl font-bold text-white">{activeClient?.name || 'Cliente'}</h1>
                 <p className="text-[#888888] text-sm mt-1">Relatório de Performance · {ig?.dateRange || ads?.dateRange || 'Mês Atual'}</p>
               </div>
               <div className="text-right">
@@ -98,11 +98,11 @@ export default function Reports() {
             </div>
           </div>
 
-          <div className="px-8 py-6 space-y-8">
+          <div className="px-4 md:px-8 py-4 md:py-6 space-y-5 md:space-y-8">
             {/* KPIs */}
             <section>
-              <h2 className="text-sm font-semibold text-[#888888] uppercase tracking-wider mb-4">Resumo Executivo</h2>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <h2 className="text-sm font-semibold text-[#888888] uppercase tracking-wider mb-3 md:mb-4">Resumo Executivo</h2>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
                 {[
                   { label: 'Investimento em Ads', value: `R$ ${ads ? Number(ads.spend).toLocaleString('pt-BR', { minimumFractionDigits: 2 }) : '0,00'}`, change: '-', ok: true },
                   { label: 'Alcance do Instagram', value: igReach.toLocaleString('pt-BR'), change: '-', ok: true },

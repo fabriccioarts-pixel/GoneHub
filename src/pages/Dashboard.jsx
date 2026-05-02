@@ -99,12 +99,12 @@ export default function Dashboard() {
   return (
     <div>
       <Header title="Dashboard" />
-      <div className="p-6 space-y-8">
+      <div className="p-4 md:p-6 space-y-5 md:space-y-8">
 
         {/* Banner de Boas-Vindas para Clientes */}
         {isClient && (
-          <section className="bg-gradient-to-r from-orange-500/10 to-orange-500/5 border border-orange-500/20 rounded-xl p-6 mb-6">
-            <h2 className="text-xl font-bold text-white mb-2">👋 Bem-vindo ao Gone Hub!</h2>
+          <section className="bg-gradient-to-r from-orange-500/10 to-orange-500/5 border border-orange-500/20 rounded-xl p-4 md:p-6 mb-4 md:mb-6">
+            <h2 className="text-lg md:text-xl font-bold text-white mb-2">👋 Bem-vindo ao Gone Hub!</h2>
             <p className="text-sm text-[#c8c8c8] leading-relaxed max-w-4xl">
               Este é o seu painel central de resultados. Aqui você pode acompanhar o desempenho das suas campanhas de 
               tráfego pago, visualizar o crescimento do seu Instagram e, na aba <strong>Calendário</strong>, 
@@ -117,11 +117,11 @@ export default function Dashboard() {
 
         {/* KPIs */}
         <section>
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-3 md:mb-4">
             <p className="text-label">Visão geral do Cliente</p>
             <p className="text-xs text-[#888888]">{activeClient.name}</p>
           </div>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
             <MetricCard title="Investimento (Meta)" value={`R$ ${totalSpend.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} icon={DollarSign} color="indigo" />
             <MetricCard title="Novos Seguidores" value={followers.toLocaleString('pt-BR')} icon={Users} color="purple" />
             <MetricCard title="Impressões Totais" value={totalImpressions.toLocaleString('pt-BR')} icon={Eye} color="cyan" />
@@ -132,8 +132,8 @@ export default function Dashboard() {
         {/* Gráfico */}
         {chartData.length > 0 && (
           <section>
-            <div className="bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl p-6">
-              <div className="flex items-center justify-between mb-6">
+            <div className="bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl p-4 md:p-6">
+              <div className="flex items-center justify-between mb-4 md:mb-6">
                 <div>
                   <h2 className="text-section-title">Evolução de Desempenho</h2>
                   <p className="text-xs text-[#555555] mt-0.5">{ads ? 'Investimento e Impressões (Meta)' : 'Crescimento de Seguidores (IG)'}</p>
@@ -162,10 +162,10 @@ export default function Dashboard() {
 
         {/* Resumo rápido */}
         <section>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-4">
 
-            <div className="bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl p-6">
-              <h3 className="text-section-title flex items-center gap-2 mb-5">
+            <div className="bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl p-4 md:p-6">
+              <h3 className="text-section-title flex items-center gap-2 mb-4 md:mb-5">
                 <TrendingUp size={15} className="text-orange-400" />
                 Top Campanhas (Meta Ads)
               </h3>
@@ -191,8 +191,8 @@ export default function Dashboard() {
               )}
             </div>
 
-            <div className="bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl p-6">
-              <h3 className="text-section-title flex items-center gap-2 mb-5">
+            <div className="bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl p-4 md:p-6">
+              <h3 className="text-section-title flex items-center gap-2 mb-4 md:mb-5">
                 <Users size={15} className="text-purple-400" />
                 Resumo Instagram
               </h3>

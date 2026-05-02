@@ -101,7 +101,7 @@ export default function AdsMonitor() {
   return (
     <div>
       <Header title="Monitor de Anúncios" />
-      <div className="p-6 space-y-6">
+      <div className="p-4 md:p-6 space-y-4 md:space-y-6">
 
         {/* Gerenciador de Arquivos / Dados */}
         <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl p-4">
@@ -140,7 +140,7 @@ export default function AdsMonitor() {
         </div>
 
         {/* KPIs */}
-        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-4">
           <MetricCard title="Investimento Total" value={`R$ ${Number(data.spend).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} icon={DollarSign} color="indigo" />
           <MetricCard title="Impressões" value={Number(data.impressions).toLocaleString('pt-BR')} icon={Eye} color="cyan" />
           <MetricCard title="Mensagens Iniciadas" value={Number(data.messages || 0).toLocaleString('pt-BR')} icon={Activity} color="purple" />
@@ -164,8 +164,8 @@ export default function AdsMonitor() {
             .sort((a, b) => b.spend - a.spend)
 
           return (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              <div className="bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl p-5">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-4">
+              <div className="bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl p-3 md:p-5">
                 <div className="flex items-center justify-between mb-4">
                   <div>
                     <h2 className="text-section-title">
@@ -204,8 +204,8 @@ export default function AdsMonitor() {
                 </ResponsiveContainer>
               </div>
 
-              <div className="bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl p-5">
-                <div className="mb-4">
+              <div className="bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl p-3 md:p-5">
+                <div className="mb-3 md:mb-4">
                   <h2 className="text-section-title">
                     {hasDaily ? 'Impressões Diárias' : 'Impressões por Campanha'}
                   </h2>
@@ -248,8 +248,8 @@ export default function AdsMonitor() {
         })()}
 
         {/* Tabela de Campanhas */}
-        <div className="bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl p-5">
-          <h2 className="text-section-title mb-5">Campanhas Ativas</h2>
+        <div className="bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl p-3 md:p-5">
+          <h2 className="text-section-title mb-4 md:mb-5">Campanhas Ativas</h2>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
@@ -297,9 +297,9 @@ export default function AdsMonitor() {
         </div>
 
         {/* Análise e Otimização */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl p-5">
-            <div className="flex items-center gap-2 mb-5">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-4">
+          <div className="bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl p-3 md:p-5">
+            <div className="flex items-center gap-2 mb-4 md:mb-5">
               <Award className="text-emerald-400" size={20} />
               <h2 className="text-section-title">Melhor Desempenho (Top {metricLabel})</h2>
             </div>
@@ -348,8 +348,8 @@ export default function AdsMonitor() {
             </div>
           </div>
 
-          <div className="bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl p-5">
-            <div className="flex items-center gap-2 mb-5">
+          <div className="bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl p-3 md:p-5">
+            <div className="flex items-center gap-2 mb-4 md:mb-5">
               <AlertTriangle className="text-red-400" size={20} />
               <h2 className="text-section-title">Atenção (Pior {metricLabel})</h2>
             </div>
@@ -397,8 +397,8 @@ export default function AdsMonitor() {
             </div>
           </div>
           
-          <div className="lg:col-span-2 bg-indigo-900/10 border border-indigo-500/20 rounded-xl p-5">
-            <div className="flex items-center gap-2 mb-4">
+          <div className="lg:col-span-2 bg-indigo-900/10 border border-indigo-500/20 rounded-xl p-3 md:p-5">
+            <div className="flex items-center gap-2 mb-3 md:mb-4">
               <Lightbulb className="text-indigo-400" size={20} />
               <h2 className="text-section-title text-indigo-100">Sugestões de Otimização</h2>
             </div>

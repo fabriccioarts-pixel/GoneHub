@@ -281,7 +281,7 @@ export default function InstagramGrowth() {
   return (
     <div>
       <Header title="Crescimento Instagram" />
-      <div className="p-6 space-y-5">
+      <div className="p-4 md:p-6 space-y-4 md:space-y-5">
 
         {/* ── Tab switcher ── */}
         <div className="flex items-center justify-between gap-4">
@@ -326,7 +326,7 @@ export default function InstagramGrowth() {
             <div className="relative rounded-2xl overflow-hidden border border-[#2a2a2a]">
               <div className="absolute inset-0 bg-gradient-to-r from-purple-950/60 via-pink-950/40 to-[#0d0d0d]" />
               <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMwLTkuOTQtOC4wNi0xOC0xOC0xOFYwaDQydjQySDE4YzkuOTQgMCAxOC04LjA2IDE4LTE4eiIgZmlsbD0iI2ZmZiIgZmlsbC1vcGFjaXR5PSIuMDIiLz48L2c+PC9zdmc+')] opacity-30" />
-              <div className="relative flex items-center gap-5 p-6">
+              <div className="relative flex items-center gap-3 md:gap-5 p-4 md:p-6">
                 <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-pink-900/40 flex-shrink-0">
                   {activeClient?.name?.charAt(0).toUpperCase() || 'C'}
                 </div>
@@ -350,29 +350,29 @@ export default function InstagramGrowth() {
             </div>
 
             {/* ── KPI Cards ── */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
               {[
                 { label: 'Novos Seguidores', value: followers, icon: Users, accent: 'text-pink-400', bg: 'bg-pink-500/10', border: 'border-pink-500/20' },
                 { label: 'Alcance', value: reach, icon: Eye, accent: 'text-purple-400', bg: 'bg-purple-500/10', border: 'border-purple-500/20' },
                 { label: 'Impressões', value: impressions, icon: BarChart2, accent: 'text-indigo-400', bg: 'bg-indigo-500/10', border: 'border-indigo-500/20' },
                 { label: 'Cliques no Link', value: clicks, icon: MousePointerClick, accent: 'text-cyan-400', bg: 'bg-cyan-500/10', border: 'border-cyan-500/20' },
               ].map(({ label, value, icon: Icon, accent, bg, border }) => (
-                <div key={label} className={`rounded-xl p-4 border bg-[#0d0d0d] ${border} hover:brightness-110 transition-all`}>
-                  <div className="flex items-center justify-between mb-3">
-                    <p className="text-xs text-[#555] font-medium uppercase tracking-wider">{label}</p>
-                    <div className={`w-7 h-7 rounded-lg ${bg} flex items-center justify-center`}>
-                      <Icon size={14} className={accent} />
+                <div key={label} className={`rounded-xl p-3 md:p-4 border bg-[#0d0d0d] ${border} hover:brightness-110 transition-all`}>
+                  <div className="flex items-center justify-between mb-2 md:mb-3">
+                    <p className="text-[10px] md:text-xs text-[#555] font-medium uppercase tracking-wider">{label}</p>
+                    <div className={`w-6 h-6 md:w-7 md:h-7 rounded-lg ${bg} flex items-center justify-center`}>
+                      <Icon size={12} className={`md:size-[14px] ${accent}`} />
                     </div>
                   </div>
-                  <p className={`text-2xl font-bold ${accent}`}>{value.toLocaleString('pt-BR')}</p>
+                  <p className={`text-xl md:text-2xl font-bold ${accent}`}>{value.toLocaleString('pt-BR')}</p>
                   {value === 0 && <p className="text-[11px] text-[#3a3a3a] mt-1">Sem dados no período</p>}
                 </div>
               ))}
             </div>
 
             {/* ── Growth chart ── */}
-            <div className="bg-[#0d0d0d] border border-[#2a2a2a] rounded-2xl p-5">
-              <div className="flex items-center justify-between mb-5">
+            <div className="bg-[#0d0d0d] border border-[#2a2a2a] rounded-2xl p-3 md:p-5">
+              <div className="flex items-center justify-between mb-3 md:mb-5">
                 <div>
                   <h2 className="text-sm font-semibold text-white">Evolução de Seguidores</h2>
                   {growthData.length > 0 && (
@@ -434,7 +434,7 @@ export default function InstagramGrowth() {
             {postsList.length > 0 ? (
               <>
                 {/* Summary row */}
-                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-2 md:gap-3">
                   {[
                     { label: 'Alcance Total', value: postsSummary.reach || 0, accent: 'text-white' },
                     { label: 'Engajamento', value: totalEngagement, accent: 'text-pink-400' },
@@ -442,9 +442,9 @@ export default function InstagramGrowth() {
                     { label: 'Compartilhamentos', value: postsSummary.shares || 0, accent: 'text-white' },
                     { label: 'Salvos', value: postsSummary.saves || 0, accent: 'text-white' },
                   ].map(({ label, value, accent }) => (
-                    <div key={label} className="bg-[#0d0d0d] border border-[#222] rounded-xl p-4 text-center">
-                      <p className="text-[10px] text-[#444] uppercase font-semibold tracking-wider mb-1.5">{label}</p>
-                      <p className={`text-xl font-bold ${accent}`}>{value.toLocaleString('pt-BR')}</p>
+                    <div key={label} className="bg-[#0d0d0d] border border-[#222] rounded-xl p-3 md:p-4 text-center">
+                      <p className="text-[9px] md:text-[10px] text-[#444] uppercase font-semibold tracking-wider mb-1">{label}</p>
+                      <p className={`text-lg md:text-xl font-bold ${accent}`}>{value.toLocaleString('pt-BR')}</p>
                     </div>
                   ))}
                 </div>
@@ -457,7 +457,7 @@ export default function InstagramGrowth() {
                 </div>
 
                 {/* Post cards */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                   {[...postsList].sort((a, b) => {
                     if (sortBy === 'date') return (b.date || '').localeCompare(a.date || '')
                     if (sortBy === 'views') return b.views - a.views
@@ -480,7 +480,7 @@ export default function InstagramGrowth() {
                       <div key={idx} className="bg-[#0d0d0d] border border-[#222] rounded-2xl overflow-hidden hover:border-pink-500/30 transition-all flex flex-col md:flex-row group">
                         {/* Preview */}
                         {embedUrl ? (
-                          <div className="w-full md:w-56 h-72 md:h-auto bg-black flex-shrink-0 border-b md:border-b-0 md:border-r border-[#222] relative overflow-hidden">
+                          <div className="w-full md:w-56 h-52 md:h-auto bg-black flex-shrink-0 border-b md:border-b-0 md:border-r border-[#222] relative overflow-hidden">
                             <iframe src={embedUrl} className="w-full h-full border-0" allowTransparency="true" />
                             <div className="absolute inset-0 pointer-events-none" />
                           </div>
