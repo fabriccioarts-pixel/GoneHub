@@ -90,18 +90,12 @@
 
 /* ─── Layout ─────────────────────────────────────────────────── */
 .sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
   height: 100vh;
   width: var(--sidebar-w);
-  z-index: 40;
 }
 
 .content-area {
-  margin-left: var(--sidebar-w);
   min-height: 100vh;
-  flex: 1;
 }
 
 /* ─── Typography helpers ─────────────────────────────────────── */

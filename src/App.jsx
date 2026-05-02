@@ -13,24 +13,28 @@ import Reports from './pages/Reports'
 import Clients from './pages/Clients'
 import Settings from './pages/Settings'
 
+import { SidebarProvider, useSidebar } from './context/SidebarContext'
+
 function AppLayout() {
   return (
     <ClientProvider>
       <NotificationProvider>
-        <div className="flex min-h-screen bg-black">
-        <Sidebar />
-        <main className="content-area">
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/ads" element={<AdsMonitor />} />
-            <Route path="/instagram" element={<InstagramGrowth />} />
-            <Route path="/calendario" element={<ContentCalendar />} />
-            <Route path="/relatorios" element={<Reports />} />
-            <Route path="/clientes" element={<ProtectedRoute adminOnly><Clients /></ProtectedRoute>} />
-            <Route path="/configuracoes" element={<Settings />} />
-          </Routes>
-        </main>
-      </div>
+        <SidebarProvider>
+          <div className="flex min-h-screen bg-black overflow-x-hidden">
+            <Sidebar />
+            <main className="content-area flex-1 min-w-0">
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/ads" element={<AdsMonitor />} />
+                <Route path="/instagram" element={<InstagramGrowth />} />
+                <Route path="/calendario" element={<ContentCalendar />} />
+                <Route path="/relatorios" element={<Reports />} />
+                <Route path="/clientes" element={<ProtectedRoute adminOnly><Clients /></ProtectedRoute>} />
+                <Route path="/configuracoes" element={<Settings />} />
+              </Routes>
+            </main>
+          </div>
+        </SidebarProvider>
       </NotificationProvider>
     </ClientProvider>
   )

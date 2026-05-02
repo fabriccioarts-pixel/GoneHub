@@ -308,15 +308,15 @@ export default function InstagramGrowth() {
         {activeTab === 'growth' ? (
           <>
             {/* ── Período + excluir ── */}
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               {growthMonthOptions.length > 0
                 ? <PeriodDropdown options={growthMonthOptions} value={selectedGrowthMonth} onChange={setSelectedGrowthMonth} />
                 : <span className="text-xs text-[#555]">Nenhum período disponível</span>
               }
               {isAdmin && igGrowth && (
                 <button onClick={handleDeleteGrowth}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1a1a1a] border border-[#2a2a2a] text-[#555] hover:text-red-400 hover:border-red-900/40 hover:bg-red-900/10 rounded-lg text-xs font-medium transition-all">
-                  <Trash2 size={13} /> Excluir
+                  className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-[#1a1a1a] border border-[#2a2a2a] text-[#555] hover:text-red-400 hover:border-red-900/40 hover:bg-red-900/10 rounded-lg text-xs font-medium transition-all w-full sm:w-auto">
+                  <Trash2 size={13} /> Excluir Período
                 </button>
               )}
             </div>
@@ -418,15 +418,15 @@ export default function InstagramGrowth() {
           /* ── POSTS TAB ── */
           <div className="space-y-5">
             {/* ── Período + excluir ── */}
-            <div className="flex items-center justify-between gap-3">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
               {postsMonthOptions.length > 0
                 ? <PeriodDropdown options={postsMonthOptions} value={selectedPostsMonth} onChange={setSelectedPostsMonth} />
                 : <span className="text-xs text-[#555]">Nenhum período disponível</span>
               }
               {isAdmin && igPosts && (
                 <button onClick={handleDeletePosts}
-                  className="flex items-center gap-1.5 px-3 py-1.5 bg-[#1a1a1a] border border-[#2a2a2a] text-[#555] hover:text-red-400 hover:border-red-900/40 hover:bg-red-900/10 rounded-lg text-xs font-medium transition-all">
-                  <Trash2 size={13} /> Excluir
+                  className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-[#1a1a1a] border border-[#2a2a2a] text-[#555] hover:text-red-400 hover:border-red-900/40 hover:bg-red-900/10 rounded-lg text-xs font-medium transition-all w-full sm:w-auto">
+                  <Trash2 size={13} /> Excluir Período
                 </button>
               )}
             </div>

@@ -1,7 +1,8 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Megaphone, Camera, CalendarDays, FileText, Users, Settings, ChevronRight, LogOut } from 'lucide-react'
+import { LayoutDashboard, Megaphone, Camera, CalendarDays, FileText, Users, Settings, ChevronRight, LogOut, X } from 'lucide-react'
 import { useClients } from '../../context/ClientContext'
 import { useAuth } from '../../context/AuthContext'
+import { useSidebar } from '../../context/SidebarContext'
 
 const ADMIN_NAV = [
   { to: '/', icon: LayoutDashboard, label: 'Dashboard' },
@@ -23,11 +24,23 @@ const CLIENT_NAV = [
 export default function Sidebar() {
   const { clients, activeClient, setActiveClient } = useClients()
   const { isAdmin, signOut } = useAuth()
+  const { isOpen, close } = useSidebar()
 
   const NAV = isAdmin ? ADMIN_NAV : CLIENT_NAV
 
   return (
-    <aside className="sidebar bg-black border-r border-[#1f1f1f] flex flex-col">
+    <>
+      {/* Overlay para mobile */}
+      {isOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 md:hidden transition-all duration-300"
+          onClick={close}
+        />
+      )}
+
+      <aside className={`fixed md:static inset-y-0 left-0 z-50 w-64 bg-black border-r border-[#1f1f1f] flex flex-col transform transition-transform duration-300 ease-in-out ${
+        isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+      }`}>
       {/* Logo */}
       <div className="px-5 py-4 border-b border-[#1f1f1f]">
         <svg width="120" height="24" viewBox="0 0 176 35" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -116,6 +129,7 @@ export default function Sidebar() {
           Sair
         </button>
       </div>
-    </aside>
+      </aside>
+    </>
   )
 }

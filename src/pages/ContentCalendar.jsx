@@ -560,12 +560,12 @@ export default function ContentCalendar() {
         <div className="bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl overflow-hidden">
           <div className="grid grid-cols-7 border-b border-[#2a2a2a]">
             {['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'].map(d => (
-              <div key={d} className="py-2 text-center text-xs font-medium text-[#555]">{d}</div>
+              <div key={d} className="py-2 text-center text-[10px] md:text-xs font-medium text-[#555]">{d}</div>
             ))}
           </div>
           <div className="grid grid-cols-7">
             {Array.from({ length: firstDay }).map((_, i) => (
-              <div key={`e-${i}`} className="min-h-[90px] border-r border-b border-[#2a2a2a]/30 bg-black/20" />
+              <div key={`e-${i}`} className="min-h-[60px] md:min-h-[90px] border-r border-b border-[#2a2a2a]/30 bg-black/20" />
             ))}
             {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => {
               const dayPosts = filtered.filter(p => p.day === day)
@@ -573,7 +573,7 @@ export default function ContentCalendar() {
               const isDragOver = dragOverDay === day
               return (
                 <div key={day}
-                  className={`min-h-[90px] border-r border-b p-1.5 group transition-all relative
+                  className={`min-h-[60px] md:min-h-[90px] border-r border-b p-1 md:p-1.5 group transition-all relative
                     ${isToday ? 'bg-orange-950/30' : ''}
                     ${isDragOver
                       ? 'bg-orange-500/10 border-orange-500/40 ring-1 ring-inset ring-orange-500/30'
@@ -589,25 +589,20 @@ export default function ContentCalendar() {
                     setDraggedPostId(null)
                   }}
                 >
-                  <div className={`text-xs font-medium mb-1 w-6 h-6 flex items-center justify-center rounded-full ${isToday ? 'bg-orange-500 text-white' : 'text-[#555]'}`}>{day}</div>
-                  <div className="space-y-0.5">
+                  <div className={`text-[10px] md:text-xs font-medium mb-1 w-5 h-5 md:w-6 md:h-6 flex items-center justify-center rounded-full ${isToday ? 'bg-orange-500 text-white' : 'text-[#555]'}`}>{day}</div>
+                  
+                  {/* Desktop View: Full badges */}
+                  <div className="hidden md:block space-y-0.5">
                     {dayPosts.map(p => {
                       const { icon: Icon, color } = TYPES[p.type] || TYPES.Feed
                       const isDragging = draggedPostId === p.id
                       return (
                         <div key={p.id}
                           draggable={isAdmin}
-                          className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-xs ${color} cursor-pointer hover:brightness-110 transition-all select-none
+                          className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] ${color} cursor-pointer hover:brightness-110 transition-all select-none
                             ${isDragging ? 'opacity-40 scale-95' : ''}
                             ${isAdmin ? 'cursor-grab active:cursor-grabbing' : ''}`}
                           onClick={e => { e.stopPropagation(); if (!isDragging) openEdit(p) }}
-                          onDragStart={e => {
-                            e.stopPropagation()
-                            setDraggedPostId(p.id)
-                            e.dataTransfer.effectAllowed = 'move'
-                            e.dataTransfer.setData('text/plain', p.id)
-                          }}
-                          onDragEnd={() => { setDraggedPostId(null); setDragOverDay(null) }}
                         >
                           <Icon size={10} className="flex-shrink-0" />
                           <span className="truncate">{p.title}</span>
@@ -616,16 +611,22 @@ export default function ContentCalendar() {
                       )
                     })}
                   </div>
+
+                  {/* Mobile View: Small indicators (Dots) */}
+                  <div className="flex md:hidden flex-wrap gap-1 mt-auto">
+                    {dayPosts.map(p => {
+                      const { color } = TYPES[p.type] || TYPES.Feed
+                      // Extract background color for the dot
+                      const dotColor = color.split(' ')[1] || 'bg-orange-500'
+                      return (
+                        <div key={p.id} className={`w-1.5 h-1.5 rounded-full ${dotColor}`} />
+                      )
+                    })}
+                  </div>
+
                   {isAdmin && !draggedPostId && (
                     <div className="hidden group-hover:flex items-center justify-center mt-1">
-                      <span className="text-xs text-orange-400 flex items-center gap-0.5"><Plus size={10} /> add</span>
-                    </div>
-                  )}
-                  {isDragOver && (
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <span className="text-[10px] text-orange-400 font-medium bg-orange-500/10 px-2 py-0.5 rounded-full border border-orange-500/20">
-                        Mover para dia {day}
-                      </span>
+                      <span className="text-[10px] text-orange-400 flex items-center gap-0.5"><Plus size={10} /> add</span>
                     </div>
                   )}
                 </div>
@@ -676,36 +677,31 @@ export default function ContentCalendar() {
           <input ref={mdInputRef} type="file" accept=".md,.txt" className="hidden" onChange={handleMdUploadAndSave} />
 
           {/* Top bar */}
-          <div className="flex items-center justify-between px-6 h-14 border-b border-[#1e1e1e] bg-[#0d0d0d] flex-shrink-0">
-            <div className="flex items-center gap-4 min-w-0">
+          <div className="flex items-center justify-between px-4 md:px-6 h-14 border-b border-[#1e1e1e] bg-[#0d0d0d] flex-shrink-0">
+            <div className="flex items-center gap-3 min-w-0">
               <button onClick={() => setShowModal(false)} className="text-[#555] hover:text-white transition-colors flex-shrink-0"><X size={18} /></button>
               <div className="min-w-0">
                 <h2 className="text-sm font-semibold text-white truncate leading-tight">{form.title}</h2>
                 <div className="flex items-center gap-2 mt-0.5">
-                  <span className={`inline-flex items-center gap-1 text-[11px] px-2 py-0.5 rounded-full font-medium ${TYPES[form.type]?.color || ''}`}>
-                    <TypeIcon size={10} /> {form.type}
+                  <span className={`inline-flex items-center gap-1 text-[10px] md:text-[11px] px-2 py-0.5 rounded-full font-medium ${TYPES[form.type]?.color || ''}`}>
+                    <TypeIcon size={10} /> <span className="hidden xs:inline">{form.type}</span>
                   </span>
-                  <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${STATUS[form.status] || ''}`}>{form.status}</span>
-                  <span className="text-[11px] text-[#444]">Dia {selectedDay} · {MONTHS[month]} {year}</span>
-                  {form.markdown_content && <span className="text-[11px] text-[#555] flex items-center gap-1"><FileText size={10} /> .md</span>}
+                  <span className={`text-[10px] md:text-[11px] px-2 py-0.5 rounded-full font-medium ${STATUS[form.status] || ''}`}>{form.status}</span>
                 </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 flex-shrink-0 ml-4">
+            <div className="flex items-center gap-1.5 md:gap-2 flex-shrink-0 ml-2">
               <button onClick={exportMarkdown}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1a1a1a] border border-[#2a2a2a] text-[#888] hover:text-white hover:border-[#3a3a3a] text-xs font-medium transition-all">
-                <Download size={13} /> Exportar .md
+                title="Exportar .md"
+                className="flex items-center justify-center md:gap-1.5 w-8 h-8 md:w-auto md:px-3 md:py-1.5 rounded-lg bg-[#1a1a1a] border border-[#2a2a2a] text-[#888] hover:text-white text-xs font-medium transition-all">
+                <Download size={13} /> <span className="hidden md:inline">Exportar</span>
               </button>
               {isAdmin && (
                 <>
-                  <button onClick={() => mdInputRef.current?.click()}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#1a1a1a] border border-[#2a2a2a] text-[#888] hover:text-white hover:border-[#3a3a3a] text-xs font-medium transition-all">
-                    <Upload size={13} /> Enviar .md
-                  </button>
                   <button onClick={() => setViewMode('edit')}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-500/20 border border-orange-500/30 text-orange-400 hover:bg-orange-500/30 text-xs font-medium transition-all">
-                    <Edit2 size={13} /> Editar
+                    className="flex items-center justify-center md:gap-1.5 w-8 h-8 md:w-auto md:px-3 md:py-1.5 rounded-lg bg-orange-500/20 border border-orange-500/30 text-orange-400 hover:bg-orange-500/30 text-xs font-medium transition-all">
+                    <Edit2 size={13} /> <span className="hidden md:inline">Editar</span>
                   </button>
                 </>
               )}
@@ -713,11 +709,14 @@ export default function ContentCalendar() {
           </div>
 
           {/* Body */}
-          <div className="flex-1 flex overflow-hidden">
+          <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
 
             {/* Conteúdo */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar">
-              <div className="max-w-2xl mx-auto px-10 py-10">
+            <div className="flex-1 overflow-y-auto custom-scrollbar border-b lg:border-b-0 lg:border-r border-[#1e1e1e]">
+              <div className="max-w-2xl mx-auto px-5 md:px-10 py-8 md:py-10">
+                <p className="text-[10px] md:text-[11px] text-[#444] mb-6 uppercase tracking-widest">
+                  Publicação para dia {selectedDay} de {MONTHS[month]} de {year}
+                </p>
 
                 {/* Arquivo .md (se existir) */}
                 {form.markdown_content && (
@@ -733,11 +732,13 @@ export default function ContentCalendar() {
                         </button>
                       </div>
                     )}
-                    <MarkdownRenderer content={form.markdown_content} />
+                    <div className="prose-mobile">
+                      <MarkdownRenderer content={form.markdown_content} />
+                    </div>
                   </div>
                 )}
 
-                {/* Campos estruturados (se existirem e não houver .md, ou como complemento) */}
+                {/* Campos estruturados */}
                 {hasStructuredContent && !form.markdown_content && (
                   <>
                     {form.objective && <ContentSection label="Objetivo">{form.objective}</ContentSection>}
@@ -749,7 +750,7 @@ export default function ContentCalendar() {
                       <section className="mb-10">
                         <p className="text-[11px] font-semibold text-[#444] uppercase tracking-widest mb-3">Referência</p>
                         <a href={form.reference} target="_blank" rel="noopener noreferrer"
-                          className="text-blue-400 hover:text-blue-300 underline underline-offset-4 break-all text-base transition-colors">
+                          className="text-blue-400 hover:text-blue-300 underline underline-offset-4 break-all text-sm md:text-base transition-colors">
                           {form.reference}
                         </a>
                       </section>
@@ -787,8 +788,8 @@ export default function ContentCalendar() {
             </div>
 
             {/* Painel de comentários */}
-            <div className="w-96 flex-shrink-0 border-l border-[#1e1e1e] flex flex-col bg-[#0a0a0a] overflow-hidden">
-              <div className="flex-1 flex flex-col overflow-hidden p-5">
+            <div className="h-80 lg:h-auto lg:w-96 flex-shrink-0 flex flex-col bg-[#0a0a0a] overflow-hidden">
+              <div className="flex-1 flex flex-col overflow-hidden p-4 md:p-5">
                 <CommentsPanel {...commentsPanelProps} fullHeight />
               </div>
             </div>

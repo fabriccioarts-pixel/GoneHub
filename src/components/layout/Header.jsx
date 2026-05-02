@@ -1,14 +1,16 @@
 import { useState } from 'react'
-import { Bell, Upload } from 'lucide-react'
+import { Bell, Upload, Menu, X } from 'lucide-react'
 import { useClients } from '../../context/ClientContext'
 import { useAuth } from '../../context/AuthContext'
 import { useNotifications } from '../../context/NotificationContext'
+import { useSidebar } from '../../context/SidebarContext'
 import ImportCSV from '../ImportCSV'
 
 export default function Header({ title }) {
   const { activeClient } = useClients()
   const { user, isAdmin } = useAuth()
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications()
+  const { isOpen, toggle } = useSidebar()
   const [showImport, setShowImport] = useState(false)
   const [showNotifDropdown, setShowNotifDropdown] = useState(false)
 
@@ -16,12 +18,20 @@ export default function Header({ title }) {
 
   return (
     <>
-      <header className="h-16 bg-black/80 backdrop-blur border-b border-[#1f1f1f] flex items-center justify-between px-6 sticky top-0 z-30">
-        <div>
-          <h1 className="text-xl font-semibold text-white tracking-tight leading-tight">{title}</h1>
-          {activeClient && (
-            <p className="text-xs text-[#555555] mt-0.5">{activeClient.name} · {activeClient.ig_handle}</p>
-          )}
+      <header className="h-16 bg-black/80 backdrop-blur border-b border-[#1f1f1f] flex items-center justify-between px-4 md:px-6 sticky top-0 z-30">
+        <div className="flex items-center gap-3">
+          <button 
+            onClick={toggle}
+            className="md:hidden w-9 h-9 flex items-center justify-center rounded-lg bg-[#1a1a1a] text-[#888888] hover:text-white"
+          >
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+          <div>
+            <h1 className="text-base md:text-xl font-semibold text-white tracking-tight leading-tight truncate max-w-[150px] md:max-w-none">{title}</h1>
+            {activeClient && (
+              <p className="hidden md:block text-xs text-[#555555] mt-0.5">{activeClient.name} · {activeClient.ig_handle}</p>
+            )}
+          </div>
         </div>
         <div className="flex items-center gap-3">
           {isAdmin && (

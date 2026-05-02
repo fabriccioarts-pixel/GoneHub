@@ -104,7 +104,7 @@ export default function AdsMonitor() {
       <div className="p-6 space-y-6">
 
         {/* Gerenciador de Arquivos / Dados */}
-        <div className="flex items-center justify-between bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl p-4">
+        <div className="flex flex-col md:flex-row gap-4 items-stretch md:items-center justify-between bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl p-4">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-emerald-600/20 text-emerald-400 flex items-center justify-center">
               <FileText size={20} />
@@ -133,8 +133,8 @@ export default function AdsMonitor() {
             </div>
           </div>
           {isAdmin && (
-            <button onClick={handleDelete} className="flex items-center gap-2 px-3 py-2 bg-red-900/10 border border-red-900/30 text-red-400 hover:bg-red-900/30 hover:text-red-300 rounded-lg text-xs font-medium transition-all">
-              <Trash2 size={14} /> Excluir Relatório Selecionado
+            <button onClick={handleDelete} className="flex items-center justify-center gap-2 px-3 py-2 bg-red-900/10 border border-red-900/30 text-red-400 hover:bg-red-900/30 hover:text-red-300 rounded-lg text-xs font-medium transition-all w-full md:w-auto">
+              <Trash2 size={14} /> Excluir Relatório
             </button>
           )}
         </div>
