@@ -38,17 +38,19 @@ export function AuthProvider({ children }) {
   }
 
   async function signIn(email, password) {
+    if (!supabase) return { message: 'Configuração do Supabase não encontrada. Verifique o arquivo .env.' }
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     return error
   }
 
   async function signOut() {
-    await supabase.auth.signOut()
+    if (supabase) await supabase.auth.signOut()
     setUser(null)
     setProfile(null)
   }
 
   async function resetPassword(email) {
+    if (!supabase) return { message: 'Configuração do Supabase não encontrada.' }
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
       redirectTo: `${window.location.origin}/nova-senha`,
     })

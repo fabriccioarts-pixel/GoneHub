@@ -22,11 +22,11 @@ export default function LoginPage() {
     const err = await signIn(email, password)
     setLoading(false)
     if (err) {
-      setError(
-        err.message === 'Invalid login credentials'
-          ? 'Email ou senha incorretos.'
-          : 'Erro ao fazer login. Tente novamente.'
-      )
+      if (err.message === 'Invalid login credentials') {
+        setError('Email ou senha incorretos.')
+      } else {
+        setError(err.message || 'Erro ao fazer login. Tente novamente.')
+      }
     } else {
       navigate('/')
     }
