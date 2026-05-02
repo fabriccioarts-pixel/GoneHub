@@ -621,6 +621,8 @@ export default function ContentCalendar() {
                             ${isDragging ? 'opacity-40 scale-95' : ''}
                             ${isAdmin ? 'cursor-grab active:cursor-grabbing' : ''}`}
                           onClick={e => { e.stopPropagation(); if (!isDragging) openEdit(p) }}
+                          onDragStart={e => { e.stopPropagation(); setDraggedPostId(p.id) }}
+                          onDragEnd={() => { setDraggedPostId(null); setDragOverDay(null) }}
                         >
                           <Icon size={10} className="flex-shrink-0" />
                           <span className="truncate">{p.title}</span>
@@ -660,28 +662,25 @@ export default function ContentCalendar() {
             {filtered.sort((a, b) => a.day - b.day).map(p => {
               const { icon: Icon, color } = TYPES[p.type] || TYPES.Feed
               return (
-                <div key={p.id} className="flex flex-col gap-1.5 py-2.5 px-3 bg-[#222]/30 rounded-lg hover:bg-[#222]/50 transition-all">
-                  {/* Linha superior: dia + ícone + título */}
-                  <div className="flex items-start gap-3">
-                    <span className="text-xs text-[#555] w-6 text-center mt-0.5 flex-shrink-0">{p.day}</span>
-                    <div className={`p-1.5 rounded-lg flex-shrink-0 mt-0.5 ${color}`}><Icon size={13} /></div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-start gap-1.5">
-                        <p className="text-sm text-white break-words">{p.title}</p>
-                        {p.markdown_content && <FileText size={11} className="text-[#555] flex-shrink-0 mt-1" />}
-                      </div>
-                      {p.caption && <p className="text-xs text-[#555] mt-0.5 line-clamp-2">{p.caption}</p>}
+                <div
+                  key={p.id}
+                  onClick={() => openEdit(p)}
+                  className="flex items-center gap-3 py-2.5 px-3 bg-[#222]/30 rounded-lg hover:bg-[#222]/60 transition-all cursor-pointer group"
+                >
+                  <span className="text-xs text-[#555] w-6 text-center flex-shrink-0">{p.day}</span>
+                  <div className={`p-1.5 rounded-lg flex-shrink-0 ${color}`}><Icon size={13} /></div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-sm text-white truncate group-hover:text-orange-100 transition-colors">{p.title}</p>
+                      {p.markdown_content && <FileText size={11} className="text-[#555] flex-shrink-0" />}
                     </div>
+                    {p.caption && <p className="text-xs text-[#555] mt-0.5 truncate">{p.caption}</p>}
                   </div>
-                  {/* Linha inferior: ações */}
-                  <div className="flex items-center gap-2 pl-9">
-                    <button onClick={() => openEdit(p)} className="flex items-center gap-1 text-xs text-[#555] hover:text-orange-400 transition-colors px-2 py-1 rounded-lg hover:bg-orange-500/10">
-                      <MessageSquare size={12} /> Ver
-                    </button>
+                  <div className="flex items-center gap-2 flex-shrink-0" onClick={e => e.stopPropagation()}>
                     {isAdmin && (
                       <>
                         <button onClick={() => cycleStatus(p.id, p.status)} className={`text-xs px-2 py-0.5 rounded-full whitespace-nowrap ${STATUS[p.status]}`}>{p.status}</button>
-                        <button onClick={() => removePost(p.id)} className="text-[#444] hover:text-red-400 transition-colors ml-auto"><X size={14} /></button>
+                        <button onClick={() => removePost(p.id)} className="text-[#333] hover:text-red-400 transition-colors"><X size={14} /></button>
                       </>
                     )}
                     {isClient && <span className={`text-xs px-2 py-0.5 rounded-full whitespace-nowrap ${STATUS[p.status]}`}>{p.status}</span>}
