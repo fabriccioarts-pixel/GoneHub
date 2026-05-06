@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Plus, Trash2, Download, FileText, QrCode, Building2, User, ChevronDown, ChevronUp, Receipt } from 'lucide-react'
+import { Plus, Trash2, Download, FileText, QrCode, Building2, User, ChevronDown, ChevronUp, Receipt, TrendingUp, CheckCircle2, Clock, XCircle, BarChart2, RotateCcw } from 'lucide-react'
 import { jsPDF } from 'jspdf'
 import QRCode from 'qrcode'
 import Header from '../components/layout/Header'
@@ -323,8 +323,59 @@ const DEFAULT_TERMS = `1. OBJETO: O presente contrato tem por objeto a prestaç�
 
 7. FORO: Fica eleito o foro da comarca do domicílio da Contratada para dirimir quaisquer controvérsias.`
 
+const STATUS_CONFIG = {
+  pendente:  { label: 'Pendente',   color: 'text-amber-400',  bg: 'bg-amber-500/10 border-amber-500/20',  icon: Clock },
+  pago:      { label: 'Pago',       color: 'text-emerald-400', bg: 'bg-emerald-500/10 border-emerald-500/20', icon: CheckCircle2 },
+  cancelado: { label: 'Cancelado',  color: 'text-red-400',    bg: 'bg-red-500/10 border-red-500/20',      icon: XCircle },
+}
+
 export default function Orcamentos() {
   const { activeClient } = useClients()
+
+  const [activeTab, setActiveTab] = useState('orcamento')
+  const [statusFilter, setStatusFilter] = useState('todos')
+
+  // ── Faturamento ──
+  const [faturamentos, setFaturamentos] = useState(() => {
+    try { return JSON.parse(localStorage.getItem('gh_faturamentos') || '[]') } catch { return [] }
+  })
+  useEffect(() => { localStorage.setItem('gh_faturamentos', JSON.stringify(faturamentos)) }, [faturamentos])
+
+  function saveFaturamento(entry) {
+    setFaturamentos(prev => {
+      const exists = prev.findIndex(f => f.docNumber === entry.docNumber)
+      if (exists >= 0) {
+        const updated = [...prev]
+        updated[exists] = { ...updated[exists], ...entry }
+        return updated
+      }
+      return [entry, ...prev]
+    })
+  }
+
+  function updateStatus(docNumber, status) {
+    setFaturamentos(prev => prev.map(f => f.docNumber === docNumber ? { ...f, status } : f))
+  }
+
+  function deleteFaturamento(docNumber) {
+    setFaturamentos(prev => prev.filter(f => f.docNumber !== docNumber))
+  }
+
+  function loadFaturamento(f) {
+    if (!f.snapshot) return
+    const s = f.snapshot
+    setDocType(f.docType)
+    setDocNumber(f.docNumber)
+    setCliente(s.cliente || { nome: '', cnpj: '', contato: '', endereco: '' })
+    setServices(s.services?.length ? s.services : [{ ...EMPTY_SERVICE }])
+    setDiscountType(s.discountType || '%')
+    setDiscountVal(s.discountVal || '')
+    setNotes(s.notes || '')
+    setValidDays(s.validDays || '30')
+    setContractTerms(s.contractTerms || DEFAULT_TERMS)
+    setPixQrUrl('')
+    setActiveTab('orcamento')
+  }
 
   const [docType, setDocType] = useState('orcamento')
   const [docNumber, setDocNumber] = useState(() => `${new Date().getFullYear()}${String(new Date().getMonth() + 1).padStart(2, '0')}${String(Math.floor(Math.random() * 900) + 100)}`)
@@ -421,6 +472,17 @@ export default function Orcamentos() {
       }
       const logoUrl = await svgToDataUrl(GONE_SVG, 352, 70)
       await generatePDF({ agencia, cliente, services, discountType, discountVal, notes, docType, docNumber, pixKey, pixQrUrl: qrUrl, validDays, contractTerms, logoUrl })
+      // Salvar no faturamento
+      saveFaturamento({
+        docNumber,
+        docType,
+        clienteNome: cliente.nome || '—',
+        total,
+        date: new Date().toISOString(),
+        status: 'pendente',
+        // dados completos para recarregar
+        snapshot: { cliente, services, discountType, discountVal, notes, validDays, contractTerms },
+      })
     } finally {
       setExporting(false)
     }
@@ -433,6 +495,151 @@ export default function Orcamentos() {
     <div>
       <Header title="Orçamentos & Contratos" />
       <div className="p-4 md:p-6 space-y-5 max-w-4xl mx-auto">
+
+        {/* Page tabs */}
+        <div className="flex bg-[#111] p-1 rounded-xl border border-[#222] gap-0.5 w-fit">
+          <button onClick={() => setActiveTab('orcamento')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${activeTab === 'orcamento' ? 'bg-orange-500 text-white shadow-lg shadow-orange-900/40' : 'text-[#555] hover:text-[#888]'}`}>
+            <FileText size={13} /> Orçamentos
+          </button>
+          <button onClick={() => setActiveTab('faturamento')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold transition-all ${activeTab === 'faturamento' ? 'bg-orange-500 text-white shadow-lg shadow-orange-900/40' : 'text-[#555] hover:text-[#888]'}`}>
+            <BarChart2 size={13} /> Faturamento
+          </button>
+        </div>
+
+        {/* ── FATURAMENTO TAB ── */}
+        {activeTab === 'faturamento' && (() => {
+          const totalFaturado = faturamentos.reduce((s, f) => s + f.total, 0)
+          const totalPago     = faturamentos.filter(f => f.status === 'pago').reduce((s, f) => s + f.total, 0)
+          const totalPendente = faturamentos.filter(f => f.status === 'pendente').reduce((s, f) => s + f.total, 0)
+
+          const countAll      = faturamentos.length
+          const countPendente = faturamentos.filter(f => f.status === 'pendente').length
+          const countPago     = faturamentos.filter(f => f.status === 'pago').length
+          const countCancelado= faturamentos.filter(f => f.status === 'cancelado').length
+
+          const filtered = statusFilter === 'todos'
+            ? faturamentos
+            : faturamentos.filter(f => f.status === statusFilter)
+
+          const FILTERS = [
+            { key: 'todos',     label: 'Todos',      count: countAll },
+            { key: 'pendente',  label: 'Pendentes',  count: countPendente },
+            { key: 'pago',      label: 'Pagos',      count: countPago },
+            { key: 'cancelado', label: 'Cancelados', count: countCancelado },
+          ]
+
+          return (
+            <div className="space-y-5">
+              {/* Summary cards */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {[
+                  { label: 'Total Faturado', value: totalFaturado, color: 'text-orange-400',  border: 'border-orange-500/20',  count: countAll },
+                  { label: 'Recebido',       value: totalPago,     color: 'text-emerald-400', border: 'border-emerald-500/20', count: countPago },
+                  { label: 'A Receber',      value: totalPendente, color: 'text-amber-400',   border: 'border-amber-500/20',   count: countPendente },
+                ].map(c => (
+                  <div key={c.label} className={`bg-[#1a1a1a]/50 border ${c.border} rounded-xl p-4`}>
+                    <p className="text-[10px] text-[#555] uppercase tracking-wider mb-1">{c.label}</p>
+                    <p className={`text-xl font-bold ${c.color}`}>{fmtBRL(c.value)}</p>
+                    <p className="text-[10px] text-[#444] mt-1">{c.count} documento{c.count !== 1 ? 's' : ''}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* Table */}
+              <div className="bg-[#1a1a1a]/50 border border-[#2a2a2a]/50 rounded-xl overflow-hidden">
+                {/* Header + filtros */}
+                <div className="px-4 py-3 border-b border-[#222] flex flex-col sm:flex-row sm:items-center gap-3">
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <TrendingUp size={14} className="text-orange-400" />
+                    <span className="text-sm font-semibold text-white">Histórico</span>
+                  </div>
+                  <div className="flex bg-[#111] p-0.5 rounded-lg border border-[#1e1e1e] gap-0.5 flex-wrap">
+                    {FILTERS.map(fil => (
+                      <button key={fil.key} onClick={() => setStatusFilter(fil.key)}
+                        className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-semibold transition-all ${statusFilter === fil.key ? 'bg-orange-500 text-white' : 'text-[#555] hover:text-[#888]'}`}>
+                        {fil.label}
+                        <span className={`text-[10px] px-1.5 py-0 rounded-full font-bold ${statusFilter === fil.key ? 'bg-white/20 text-white' : 'bg-[#222] text-[#444]'}`}>
+                          {fil.count}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {faturamentos.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-16 gap-3">
+                    <BarChart2 size={36} className="text-[#2a2a2a]" />
+                    <p className="text-sm text-[#444]">Nenhum documento exportado ainda</p>
+                    <p className="text-[11px] text-[#333]">Exporte um orçamento ou contrato para registrar aqui</p>
+                  </div>
+                ) : filtered.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center py-12 gap-2">
+                    <p className="text-sm text-[#444]">Nenhum documento com este status</p>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-[#1e1e1e]">
+                    <div className="hidden md:grid grid-cols-12 gap-2 px-4 py-2 text-[10px] text-[#444] uppercase tracking-wider">
+                      <div className="col-span-1">Nº</div>
+                      <div className="col-span-2">Tipo</div>
+                      <div className="col-span-3">Cliente</div>
+                      <div className="col-span-2">Data</div>
+                      <div className="col-span-2 text-right">Valor</div>
+                      <div className="col-span-1 text-center">Status</div>
+                      <div className="col-span-1"></div>
+                    </div>
+                    {filtered.map(f => {
+                      const cfg = STATUS_CONFIG[f.status] || STATUS_CONFIG.pendente
+                      return (
+                        <div key={f.docNumber} className="grid grid-cols-12 gap-2 px-4 py-3 items-center hover:bg-white/[0.02] transition-colors">
+                          <div className="col-span-5 md:col-span-1 text-[11px] text-[#555] font-mono truncate">{f.docNumber}</div>
+                          <div className="col-span-7 md:col-span-2 flex justify-end md:justify-start">
+                            <span className={`text-[10px] px-2 py-0.5 rounded-full border font-medium ${f.docType === 'contrato' ? 'text-indigo-400 bg-indigo-500/10 border-indigo-500/20' : 'text-orange-400 bg-orange-500/10 border-orange-500/20'}`}>
+                              {f.docType === 'contrato' ? 'Contrato' : 'Orçamento'}
+                            </span>
+                          </div>
+                          <div className="col-span-8 md:col-span-3 text-sm text-white truncate">{f.clienteNome}</div>
+                          <div className="col-span-4 md:col-span-2 text-[11px] text-[#555]">
+                            {new Date(f.date).toLocaleDateString('pt-BR')}
+                          </div>
+                          <div className="col-span-6 md:col-span-2 text-sm font-semibold text-white text-right">
+                            {fmtBRL(f.total)}
+                          </div>
+                          <div className="col-span-4 md:col-span-1 flex items-center justify-center">
+                            <select
+                              value={f.status}
+                              onChange={e => updateStatus(f.docNumber, e.target.value)}
+                              className={`text-[11px] font-semibold px-2 py-1 rounded-full border bg-transparent cursor-pointer focus:outline-none ${cfg.color} ${cfg.bg}`}>
+                              <option value="pendente">Pendente</option>
+                              <option value="pago">Pago</option>
+                              <option value="cancelado">Cancelado</option>
+                            </select>
+                          </div>
+                          <div className="col-span-2 md:col-span-1 flex items-center justify-end gap-2">
+                            {f.snapshot && (
+                              <button onClick={() => loadFaturamento(f)} title="Carregar orçamento"
+                                className="text-[#2a2a2a] hover:text-orange-400 transition-colors">
+                                <RotateCcw size={13} />
+                              </button>
+                            )}
+                            <button onClick={() => deleteFaturamento(f.docNumber)}
+                              className="text-[#2a2a2a] hover:text-red-400 transition-colors">
+                              <Trash2 size={13} />
+                            </button>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+          )
+        })()}
+
+        {/* ── ORÇAMENTO TAB ── */}
+        {activeTab === 'orcamento' && <>
 
         {/* Doc type + number */}
         <div className="flex flex-col sm:flex-row gap-3">
@@ -679,6 +886,8 @@ export default function Orcamentos() {
             )}
           </div>
         )}
+
+        </>}
 
       </div>
     </div>
