@@ -12,6 +12,7 @@ import ContentCalendar from './pages/ContentCalendar'
 import Reports from './pages/Reports'
 import Clients from './pages/Clients'
 import Settings from './pages/Settings'
+import Orcamentos from './pages/Orcamentos'
 
 import { SidebarProvider, useSidebar } from './context/SidebarContext'
 
@@ -30,6 +31,7 @@ function AppLayout() {
                 <Route path="/calendario" element={<ContentCalendar />} />
                 <Route path="/relatorios" element={<Reports />} />
                 <Route path="/clientes" element={<ProtectedRoute adminOnly><Clients /></ProtectedRoute>} />
+                <Route path="/orcamentos" element={<ProtectedRoute adminOnly><Orcamentos /></ProtectedRoute>} />
                 <Route path="/configuracoes" element={<Settings />} />
               </Routes>
             </main>

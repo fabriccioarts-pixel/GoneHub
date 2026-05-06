@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, Megaphone, Camera, CalendarDays, FileText, Users, Settings, ChevronRight, LogOut, X } from 'lucide-react'
+import { LayoutDashboard, Megaphone, Camera, CalendarDays, FileText, Users, Settings, ChevronRight, LogOut, X, Receipt } from 'lucide-react'
 import { useClients } from '../../context/ClientContext'
 import { useAuth } from '../../context/AuthContext'
 import { useSidebar } from '../../context/SidebarContext'
@@ -10,6 +10,7 @@ const ADMIN_NAV = [
   { to: '/instagram', icon: Camera, label: 'Instagram' },
   { to: '/calendario', icon: CalendarDays, label: 'Calendário' },
   { to: '/relatorios', icon: FileText, label: 'Relatórios' },
+  { to: '/orcamentos', icon: Receipt, label: 'Orçamentos' },
   { to: '/clientes', icon: Users, label: 'Clientes' },
 ]
 
