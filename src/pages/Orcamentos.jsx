@@ -358,6 +358,18 @@ export default function Orcamentos() {
   useEffect(() => { localStorage.setItem('gh_pix_city', pixCity) }, [pixCity])
   useEffect(() => { localStorage.setItem('gh_agencia', JSON.stringify(agencia)) }, [agencia])
 
+  // Auto-gerar QR quando PIX já está configurado
+  useEffect(() => {
+    if (!pixKey.trim()) return
+    const name = pixName || agencia.nome
+    const city = pixCity || 'BRASIL'
+    QRCode.toDataURL(
+      buildPixPayload({ key: pixKey, name, city, amount: 0 }),
+      { width: 300, margin: 1, color: { dark: '#0f0f0f', light: '#ffffff' } }
+    ).then(url => setPixQrUrl(url)).catch(() => {})
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   // Pre-fill client from activeClient
   useEffect(() => {
     if (activeClient) {
